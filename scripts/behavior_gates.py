@@ -30,6 +30,12 @@ def NOT(x):
         x = np.sign(x) * (1 - np.abs(x))
     return x
 
+def SNOT(x):
+    if x == 0 :
+        return 1
+    else:
+        return np.tanh(x)/np.tanh(1) * (1-np.abs(x))
+
 def AMP(*args):
     return np.prod(args)
 

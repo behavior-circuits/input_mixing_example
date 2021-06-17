@@ -5,6 +5,7 @@ import rospy
 from sensor_msgs.msg import LaserScan
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist
+import behavior_gates as bg
 
 
 
@@ -63,16 +64,16 @@ class CollisionAvoidance:
         for i in range(len(sonar_angles)):
             if sonar_angles[i] >= np.pi:
                 sonar_angles[i]=sonar_angles[i]-2*np.pi
-            #normalised_range=sigmoid(sonar_ranges[i],15,0.2)  #here are the parameteres stored
+
             if sonar_ranges[i] == 0:
 		sonar_ranges[i]=10000
             normalised_range=normaliser(sonar_ranges[i],0.4,0.07)
             normalised_angle=sigmoid(sonar_angles[i],3,0,symmetric=True)   
  		
-            #print(not_gate(normalised_range)*sonar_angles[i])
-            force_contrib[i]= and_gate(amp_gate(not_gate(normalised_range),-1*not_gate(normalised_angle)),-1*not_gate(normalised_angle))
-            linear_force_contrib[i]= and_gate(normalised_range,not_gate(normalised_angle))
-            #force[1]=or_gate(force[1],force_contrib[i])
+
+            force_contrib[i]= bg.AND(bg.AMP(bg.SNOT(normalised_range),-1*bg.SNOT(normalised_angle)),-1*bg.SNOT(normalised_angle))
+            linear_force_contrib[i]= bg.AND(normalised_range,bg.SNOT(normalised_angle))
+
         force[1]=sigmoid(np.sum(force_contrib),10,0,True)
 	force[0]= sigmoid(np.sum(linear_force_contrib),1,0)*0.1
 
@@ -96,20 +97,6 @@ def sigmoid(x,steepness,midpoint,symmetric=False):
     else:
         return 1/(1+np.exp(-steepness*(x-midpoint)))
 
-def not_gate(x):
-    if x == 0 :
-        return 1
-    else:
-        return (1-np.abs(x))*np.tanh(x)/np.tanh(1)#*np.sign(x)
-def and_gate(x,y):
-    return x*y*np.tanh(x+y)/np.tanh(1)
-
-def or_gate(x,y):
-    return x+y-x*y*np.tanh(x+y)/np.tanh(1)
-def amp_gate(x,y):
-        return x*y
-def prevail_gate(x, y):
-        return or_gate(x, or_gate(x, y))
 
 
 
