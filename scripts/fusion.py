@@ -22,8 +22,9 @@ class Fusion:
 	def fusion(self):
 		cmd_vel = Twist()
                 # Circuit goes here
-		cmd_vel.linear.x = self.behaviors[0,0]#bg.AND(self.behaviors[0,0],self.behaviors[1,0])
-                cmd_vel.angular.z = bg.PREVAIL(self.behaviors[1,1],self.behaviors[0,1])
+                print(self.behaviors)
+		cmd_vel.linear.x = bg.INVOKE(self.behaviors[2,0],10*self.behaviors[0,0])#bg.AND(self.behaviors[0,0],self.behaviors[1,0])
+                cmd_vel.angular.z = bg.PREVAIL(self.behaviors[1,1],bg.INVOKE(self.behaviors[2,1],10*self.behaviors[0,1]))
 		self.pub.publish(cmd_vel)
 
 
