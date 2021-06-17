@@ -14,17 +14,16 @@ class Fusion:
 		self.pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
 		while not rospy.is_shutdown():
 			self.fusion()
-
+                        rospy.sleep(0.01)
         def generate_behavior(self,data,index):
                 self.behaviors[index,0] = data.linear.x
                 self.behaviors[index,1] = data.angular.z
 
 	def fusion(self):
-                print(self.behaviors)
 		cmd_vel = Twist()
                 # Circuit goes here
-		cmd_vel.linear.x = 0
-                cmd_vel.angular.z = 0
+		cmd_vel.linear.x = self.behaviors[0,0]#bg.AND(self.behaviors[0,0],self.behaviors[1,0])
+                cmd_vel.angular.z = bg.PREVAIL(self.behaviors[1,1],self.behaviors[0,1])
 		self.pub.publish(cmd_vel)
 
 

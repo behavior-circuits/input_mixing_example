@@ -1,5 +1,5 @@
 <launch>
   <node name="homing" type="homing.py" pkg="behaviour_circuits" />
-  <node name="collision avoidance" type="collision_avoidance.py" pkg="behaviour_circuits" />
+  <node name="collision_avoidance" type="collision_avoidance.py" pkg="behaviour_circuits" />
   <node name="fusion" type="fusion.py" pkg="behaviour_circuits" args="homing_cmd col_cmd joy_cmd nav_cmd" output="screen" /> 
 </launch>
