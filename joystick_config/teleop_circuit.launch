@@ -1,0 +1,23 @@
+<launch>
+  <arg name="joy_config" default="atk3" />
+  <arg name="joy_dev" default="/dev/input/js0" />
+  <arg name="config_filepath" default="$(find teleop_twist_joy)/config/$(arg joy_config).config.yaml" />
+  
+  <node pkg="joy" type="joy_node" name="joy_node">
+    <param name="dev" value="$(arg joy_dev)" />
+    <param name="deadzone" value="0.3" />
+    <param name="autorepeat_rate" value="20" />
+    <remap from="joy" to="joy1" /> 
+    <remap from="joy/set_feedback" to="joy1/set_feedback"/>
+ </node>
+
+  <node pkg="teleop_twist_joy" name="teleop_twist_joy" type="teleop_node">
+    <rosparam command="load" file="$(arg config_filepath)" />
+    <remap from="cmd_vel" to="/joy_cmd"/> 
+    <remap from="joy" to="joy1"/>	
+    <remap from="joy/set_feedback" to="joy1/set_feedback"/>
+    <rosparam param="/teleop_twist_joy/scale_angular">1.3</rosparam>
+    <rosparam param="/teleop_twist_joy/scale_linear">1.0</rosparam>
+
+ </node>
+</launch>
