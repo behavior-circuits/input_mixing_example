@@ -32,7 +32,7 @@ class CollisionAvoidance:
         '''
         Das Ergebnis der Berechnung wird dem Roboter als Soll-Geschwindigkeit zurueckgegeben.
         '''
-        self.col_avoid_publisher = rospy.Publisher("/cmd_vel", Twist, queue_size=10)
+        self.col_avoid_publisher = rospy.Publisher("/col_cmd", Twist, queue_size=10)
 
         rospy.spin()
 

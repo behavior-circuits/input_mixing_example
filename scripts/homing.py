@@ -15,7 +15,7 @@ class TargetCalculation:
         self.cmd_vel = Twist()
         rospy.Subscriber('/move_base_simple/goal', PoseStamped,self.target_callback)
         rospy.Subscriber('/odom', Odometry, self.pose_callback)
-        pub = rospy.Publisher("/cmd_vel", Twist, queue_size=1)
+        pub = rospy.Publisher("/homing_cmd", Twist, queue_size=1)
         
         while not rospy.is_shutdown():
 
