@@ -12,7 +12,7 @@ class Fusion:
                 self.behaviors = np.zeros((5,2))
                 for i in range(5):
                     rospy.Subscriber(sys.argv[i+1], Point, self.generate_behavior,i)
-		self.pub                     = rospy.Publisher('/RosAria/cmd_vel', Twist, queue_size=1)
+		self.pub                     = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
 		while not rospy.is_shutdown():
 			self.fusion()
 
@@ -21,6 +21,18 @@ class Fusion:
 
 	def fusion(self):
 		cmd_vel = Twist()
+		cmd_vel.linear.x = 1
+                cmd_vel.angular.z = prevail_gate(or_gate(invoke_gate(self.behaviors[2,1],self.behaviors[0,1]),self.behaviors[3,1]),self.behaviors[4,1])
+                #cmd_vel.angular.z = self.behaviors[1,1]
                 print(self.behaviors)
 		self.pub.publish(cmd_vel)
+
+
+
+if __name__ == '__main__':
+	try:
+		rospy.init_node("fusion")
+		fus = Fusion()	
+	except rospy.ROSInterruptException:
+		rospy.loginfo("---------- FUSION-ERROR! ---------")
 

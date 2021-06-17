@@ -3,7 +3,7 @@ import numpy as np
 import rospy
 import behavior_gates as bg
 
-from geometry_msgs.msg import PoseStamped, Pose, Twist, Point, Vector3
+from geometry_msgs.msg import PoseStamped, Pose, Twist
 from nav_msgs.msg import Odometry
 from tf.transformations import euler_from_quaternion
 
@@ -24,26 +24,18 @@ class TargetCalculation:
             cmd_vel = Twist()
 
             normalized_angle = sigmoid(alpha,0.8,0,True)
-
             normalized_rho   = normaliser(rho,0.1,0.02)
 
-            cmd_vel.linear.x = 0.1 *bg.AMP(normalized_rho,bg.NOT(np.abs(normalized_angle))) #normalized_rho 
-            #print(normalized_rho)
-            cmd_vel.angular.z = -1* normalized_angle#bg.AMP(normalized_angle,normalized_rho)
-
-	    print(alpha,cmd_vel.angular.z)
-            #print(rho,cmd_vel.linear.x)
-	    #print(cmd_vel)
-            self.cmd_vel = cmd_vel
+            cmd_vel.linear.x  = 0.1 * bg.AMP(normalized_rho,bg.NOT(np.abs(normalized_angle))) 
+            cmd_vel.angular.z =  -1 * normalized_angle
+            self.cmd_vel      = cmd_vel
             pub.publish(self.cmd_vel)
             rospy.sleep(0.01)
 
     def pose_callback(self, odom):
-        #print('odom: ' + str(odom))
         self.robot_pose = odom.pose.pose
 
     def target_callback(self,data):
-        #print("target: " + str(data))
         self.target=data
 
     def calculate_rho_alpha(self):
@@ -53,18 +45,10 @@ class TargetCalculation:
                          self.robot_pose.position.y - self.target.pose.position.y,
                          self.robot_pose.position.z - self.target.pose.position.z])
           
-        rho = np.linalg.norm(dist)        
-	#print(rho)
+        rho   = np.linalg.norm(dist)        
         alpha = np.arctan2(dist[0],dist[1]) +np.pi/2 + yaw
-
         if alpha > np.pi:
             alpha -= 2*np.pi
-        '''
-        if alpha < -np.pi:
-            alpha += np.pi
-        '''
-
-
 
         return (rho, alpha)
 
