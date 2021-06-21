@@ -23,10 +23,33 @@ class Fusion:
 		cmd_vel = Twist()
                 # Circuit goes here
                 print(self.behaviors)
-		cmd_vel.linear.x = bg.AND(10*self.behaviors[1,0],bg.INVOKE(self.behaviors[2,0],self.behaviors[0,0]))#bg.AND(self.behaviors[0,0],self.behaviors[1,0])
-                cmd_vel.angular.z = bg.PREVAIL(self.behaviors[1,1], bg.INVOKE(self.behaviors[2,1],self.behaviors[0,1]))
+                '''
+                Fusion circuit 1
+                ----------------
+                
+                This Circuit avoids collisions and assist the joystick using a homing behaviour which is invoked by the joystick
+                '''
+		#cmd_vel.linear.x = bg.AND(10*self.behaviors[1,0],bg.INVOKE(self.behaviors[2,0],self.behaviors[0,0]))
+                #cmd_vel.angular.z = bg.PREVAIL(self.behaviors[1,1], bg.INVOKE(self.behaviors[2,1],self.behaviors[0,1]))
+
+
+
+                '''
+                Fusion circuit 2
+                ----------------
+                
+                This Circuit lets the system navigate autonomously except if the joystick provides a different command
+                '''
+		cmd_vel.linear.x = bg.PREVAIL(self.behaviors[2,0], self.behaviors[0,0])
+                cmd_vel.angular.z = bg.PREVAIL(self.behaviors[2,1], bg.PREVAIL(self.behaviors[1,1],self.behaviors[0,1]))
+
+                
 		self.pub.publish(cmd_vel)
 
+
+
+def EQUIV(x,y):
+	return bg.SNOT(XOR)
 
 
 if __name__ == '__main__':
