@@ -8,13 +8,19 @@ import behavior_gates as bg
 
 def joystick_callback(twist):
 
-    wait_time      = np.abs(np.random.normal(0,0.1))
-    ctr_noise      = np.array([np.random.normal(0,0.01),np.random.normal(0,0.1)])
-    joystick_input = np.array([twist.linear.x,twist.angular.z])
+    wait_time       = np.abs(np.random.normal(0,0.1))
+    ctr_noise       = np.array([np.random.normal(0,0.01),np.random.normal(0,0.1)])
+    lin_quant_steps = []
+    ang_quant_steps = []
+    joystick_input  = np.array([twist.linear.x,twist.angular.z])
 
     rospy.sleep(wait_time)
 
     joystick_input = joystick_input + ctr_noise
+    if lin_quant_step != []:
+        joystick_input[0]=np.digitize(joystick_input[0],bins=lin_quant_steps)
+    if ang_quant_step != []:
+        joystick_input[1]=np.digitize(joystick_input[1],bins=ang_quant_steps)
 
     output = Twist()
     output.linear.x  = joystick_input[0]
