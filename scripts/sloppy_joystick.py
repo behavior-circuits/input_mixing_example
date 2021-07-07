@@ -9,7 +9,7 @@ import behavior_gates as bg
 def joystick_callback(twist):
 
     wait_time      = np.abs(np.random.normal(0,0.1))
-    ctr_noise      = np.random.normal(0,0.1,2)
+    ctr_noise      = np.array([np.random.normal(0,0.01),np.random.normal(0,0.1)])
     joystick_input = np.array([twist.linear.x,twist.angular.z])
 
     rospy.sleep(wait_time)
@@ -33,8 +33,8 @@ def joystick_callback(twist):
 if __name__ == '__main__':
 	try:
                 rospy.init_node("joystick_model")
-		pub = rospy.Publisher('/joy_cmd_vel', Twist, queue_size=1)
-                rospy.Subscriber('/cmd_vel', Twist, joystick_callback)
+		pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
+                rospy.Subscriber('/joy_cmd_vel', Twist, joystick_callback)
                 rospy.spin()
 	except rospy.ROSInterruptException:
 		rospy.loginfo("---------- FUSION-ERROR! ---------")
