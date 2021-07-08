@@ -9,7 +9,7 @@ import behavior_gates as bg
 def joystick_callback(twist):
 
     wait_time       = np.abs(np.random.normal(0,0.04))
-    ctr_noise       = np.array([np.random.normal(0,0.01),np.random.normal(0,1.6)])
+    ctr_noise       = np.array([np.random.normal(0,0.01),np.random.normal(0,0.2)])
     lin_quant_steps = []
     ang_quant_steps = []
     joystick_input  = np.array([twist.linear.x,twist.angular.z])
