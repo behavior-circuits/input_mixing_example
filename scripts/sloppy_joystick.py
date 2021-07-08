@@ -9,7 +9,7 @@ import behavior_gates as bg
 def joystick_callback(twist):
 
     wait_time       = np.abs(np.random.normal(0,0.02))
-    ctr_noise       = np.array([np.random.normal(0,0.08),np.random.normal(0,0.8)])
+    ctr_noise       = np.array([np.random.normal(0,0.01),np.random.normal(0,1.6)])
     lin_quant_steps = []
     ang_quant_steps = []
     joystick_input  = np.array([twist.linear.x,twist.angular.z])
@@ -23,8 +23,8 @@ def joystick_callback(twist):
         joystick_input[1]=np.digitize(joystick_input[1],bins=ang_quant_steps)
 
     output = Twist()
-    output.linear.x  = joystick_input[0]
-    output.angular.z = joystick_input[1]
+    output.linear.x  = np.max(-1,np.min(1,joystick_input[0]))
+    output.angular.z = np.max(-1.3,np.min(1.3,joystick_input[1]))/1.3
 
     pub.publish(output)
     
@@ -39,7 +39,8 @@ def joystick_callback(twist):
 if __name__ == '__main__':
 	try:
                 rospy.init_node("joystick_model")
-		pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
+		#pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
+		pub = rospy.Publisher('/sloppy_joy_cmd', Twist, queue_size=1)
                 rospy.Subscriber('/joy_cmd', Twist, joystick_callback)
                 rospy.spin()
 	except rospy.ROSInterruptException:
