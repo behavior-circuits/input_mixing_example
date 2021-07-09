@@ -11,15 +11,16 @@ class sloppy_joystick:
 
     def __init__(self):
         self.lin_quant_steps = []
-        self.ang_quant_steps = []
-        self.noise_variance  = np.array([0.01,0.2])
+        self.ang_quant_steps = []#[-1.3, -0.7, 0, 0.7, 1.3]
+        self.noise_variance  = np.array([0.01,0.3])
+        self.time_variance   = 2
         self.joystick_input  = np.zeros(2)
 
-        pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
-        #pub = rospy.Publisher('/sloppy_joy_cmd', Twist, queue_size=1)
+        #pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
+        pub = rospy.Publisher('/sloppy_joy_cmd', Twist, queue_size=1)
         rospy.Subscriber('/joy_cmd', Twist, self.joystick_callback)
         while not rospy.is_shutdown():
-            wait_time       = np.abs(np.random.normal(0,0.04))
+            wait_time       = np.abs(np.random.normal(0,self.time_variance))
             ctr_noise       = np.array([np.random.normal(0,self.noise_variance[0]),np.random.normal(0,self.noise_variance[1])])
 
             rospy.sleep(wait_time)
@@ -28,7 +29,7 @@ class sloppy_joystick:
             if self.lin_quant_steps != []:
                 joystick_input[0]=np.digitize(joystick_input[0],bins=self.lin_quant_steps)
             if self.ang_quant_steps != []:
-                joystick_input[1]=np.digitize(joystick_input[1],bins=sel.fang_quant_steps)
+                joystick_input[1]=np.digitize(joystick_input[1],bins=self.ang_quant_steps)
 
             output = Twist()
             output.linear.x  = max(-1,min(1,joystick_input[0]))
