@@ -1,4 +1,5 @@
 <launch>
+  <arg name="circuit" />
   <node name="homing" type="homing.py" pkg="behaviour_circuits" />
   <node name="collision_avoidance" type="collision_avoidance.py" pkg="behaviour_circuits" />
   <node name="sloppy_joystick" type="sloppy_joystick.py" pkg="behaviour_circuits" />
@@ -6,5 +7,5 @@
  <include file="$(find teleop_twist_joy)/launch/teleop_circuit.launch"/>
  <include file="$(find behaviour_circuits)/launch/turtlebot3_navigation.launch"/> 
 
-  <node name="fusion" type="fusion.py" pkg="behaviour_circuits" args="homing_cmd col_cmd sloppy_joy_cmd nav_cmd circuit_3" output="screen" /> 
+  <node name="fusion" type="fusion.py" pkg="behaviour_circuits" args="homing_cmd col_cmd sloppy_joy_cmd nav_cmd $(arg circuit)" output="screen" /> 
 </launch>

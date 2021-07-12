@@ -64,4 +64,15 @@ def circuit_5(behaviors):
     return cmd_vel
 
 
-circuit_dict = {"circuit_1":circuit_1,"circuit_2":circuit_2,"circuit_3":circuit_3,"circuit_4":circuit_4,"circuit_5":circuit_5}
+def circuit_6(behaviors):
+    '''
+    Fusion circuit 4
+    ----------------
+
+    This Circuit lets the sloppy_joystick directly control the robot
+    '''
+    cmd_vel = Twist()
+    cmd_vel.linear.x  = behaviors[2,0]
+    cmd_vel.angular.z = behaviors[2,1]
+    return cmd_vel
+circuit_dict = {"circuit_1":circuit_1,"circuit_2":circuit_2,"circuit_3":circuit_3,"circuit_4":circuit_4,"circuit_5":circuit_5,"circuit_6":circuit_6}
