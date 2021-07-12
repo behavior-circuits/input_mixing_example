@@ -3,7 +3,7 @@ import sys
 import rospy
 import numpy as np
 from geometry_msgs.msg import Twist
-import behavior_gates as bg
+import circuits as circ
 
 class Fusion:
 	def __init__(self):
@@ -20,56 +20,8 @@ class Fusion:
                 self.behaviors[index,1] = data.angular.z
 
 	def fusion(self):
-		cmd_vel = Twist()
-                #print(self.behaviors)
-                # Circuit goes here
-                '''
-                Fusion circuit 1
-                ----------------
-                
-                This Circuit avoids collisions and assist the joystick using a homing behaviour which is invoked by the joystick
-                '''
-		#cmd_vel.linear.x  = bg.AND(10*self.behaviors[1,0],bg.INVOKE(self.behaviors[2,0],self.behaviors[0,0]))
-                #cmd_vel.angular.z = bg.PREVAIL(self.behaviors[1,1], bg.OR(self.behaviors[2,1],self.behaviors[0,1]))
-
-
-
-                '''
-                Fusion circuit 2
-                ----------------
-                
-                This Circuit lets the system navigate autonomously except if the joystick provides a different command
-                '''
-		#cmd_vel.linear.x  = bg.PREVAIL(self.behaviors[2,0], self.behaviors[0,0])
-                #cmd_vel.angular.z = bg.PREVAIL(self.behaviors[2,1], bg.PREVAIL(self.behaviors[1,1],self.behaviors[0,1]))
-
-                '''
-                Fusion circuit 3
-                ----------------
-                
-                This Circuit avoids collisions and assist the joystick using a navstack behaviour which is ORed by the joystick
-                '''
-		cmd_vel.linear.x  = bg.AND(10*self.behaviors[1,0],bg.INVOKE(self.behaviors[2,0],self.behaviors[3,0]))
-                cmd_vel.angular.z = bg.PREVAIL(self.behaviors[1,1], bg.OR(self.behaviors[2,1],self.behaviors[3,1]))
-                
-                '''
-                Fusion circuit 4
-                ----------------
-
-                This Circuit lets the navstack directly control the robot
-                '''
-                #cmd_vel.linear.x  = self.behaviors[3,0]
-                #cmd_vel.angular.z = self.behaviors[3,1]
-
-                '''
-                Fusion circuit 5
-                ----------------
-                
-                This Circuit assist the joystick using a navstack behaviour which is ORed by the joystick
-                '''
-		#cmd_vel.linear.x  =  bg.INVOKE(self.behaviors[2,0],self.behaviors[3,0])
-                #cmd_vel.angular.z =  bg.OR(self.behaviors[2,1],self.behaviors[3,1])
-
+                circuit = circ.circuit_dict[sys.argv[5]]
+                cmd_vel = circuit(self.behaviors)
 		self.pub.publish(cmd_vel)
 
 

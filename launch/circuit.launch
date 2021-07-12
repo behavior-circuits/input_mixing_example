@@ -6,5 +6,5 @@
  <include file="$(find teleop_twist_joy)/launch/teleop_circuit.launch"/>
  <include file="$(find behaviour_circuits)/launch/turtlebot3_navigation.launch"/> 
 
-  <node name="fusion" type="fusion.py" pkg="behaviour_circuits" args="homing_cmd col_cmd sloppy_joy_cmd nav_cmd" output="screen" /> 
+  <node name="fusion" type="fusion.py" pkg="behaviour_circuits" args="homing_cmd col_cmd sloppy_joy_cmd nav_cmd circuit_3" output="screen" /> 
 </launch>
