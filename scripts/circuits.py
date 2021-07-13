@@ -3,7 +3,7 @@ import behavior_gates as bg
 
 
 
-def circuit_1(behaviors):
+def main_fusion_homing(behaviors):
     '''
     Fusion circuit 1
     ----------------
@@ -15,7 +15,7 @@ def circuit_1(behaviors):
     cmd_vel.angular.z = bg.PREVAIL(behaviors[1,1], bg.OR(behaviors[2,1],behaviors[0,1]))
     return cmd_vel
 
-def circuit_2(behaviors):
+def joystick_interrupt(behaviors):
     '''
     Fusion circuit 2
     ----------------
@@ -27,7 +27,7 @@ def circuit_2(behaviors):
     cmd_vel.angular.z = bg.PREVAIL(behaviors[2,1], bg.PREVAIL(behaviors[1,1],behaviors[0,1]))
     return cmd_vel
 
-def circuit_3(behaviors):
+def main_fusion(behaviors):
     '''
     Fusion circuit 3
     ----------------
@@ -39,7 +39,7 @@ def circuit_3(behaviors):
     cmd_vel.angular.z = bg.PREVAIL(behaviors[1,1], bg.OR(behaviors[2,1],behaviors[3,1]))
     return cmd_vel
 
-def circuit_4(behaviors):
+def navstack(behaviors):
     '''
     Fusion circuit 4
     ----------------
@@ -51,7 +51,7 @@ def circuit_4(behaviors):
     cmd_vel.angular.z = behaviors[3,1]
     return cmd_vel
 
-def circuit_5(behaviors):
+def nav_and_joy(behaviors):
     '''
     Fusion circuit 5
     ----------------
@@ -64,9 +64,9 @@ def circuit_5(behaviors):
     return cmd_vel
 
 
-def circuit_6(behaviors):
+def sloppy_joystick(behaviors):
     '''
-    Fusion circuit 4
+    Fusion circuit 6
     ----------------
 
     This Circuit lets the sloppy_joystick directly control the robot
@@ -75,4 +75,4 @@ def circuit_6(behaviors):
     cmd_vel.linear.x  = behaviors[2,0]
     cmd_vel.angular.z = behaviors[2,1]
     return cmd_vel
-circuit_dict = {"circuit_1":circuit_1,"circuit_2":circuit_2,"circuit_3":circuit_3,"circuit_4":circuit_4,"circuit_5":circuit_5,"circuit_6":circuit_6}
+circuit_dict = {"main_fusion_homing":main_fusion_homing,"joystick_interrupt":joystick_interrupt,"main_fusion":main_fusion,"navstack":navstack,"nav_and_joy":nav_and_joy,"sloppy_joystick":sloppy_joystick}
