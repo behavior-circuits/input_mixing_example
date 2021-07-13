@@ -3,7 +3,7 @@ import behavior_gates as bg
 
 
 
-def main_fusion_homing(behaviors):
+def main_circuit_homing(behaviors):
     '''
     Fusion circuit 1
     ----------------
@@ -27,7 +27,7 @@ def joystick_interrupt(behaviors):
     cmd_vel.angular.z = bg.PREVAIL(behaviors[2,1], bg.PREVAIL(behaviors[1,1],behaviors[0,1]))
     return cmd_vel
 
-def main_fusion(behaviors):
+def main_circuit(behaviors):
     '''
     Fusion circuit 3
     ----------------
@@ -75,4 +75,4 @@ def sloppy_joystick(behaviors):
     cmd_vel.linear.x  = behaviors[2,0]
     cmd_vel.angular.z = behaviors[2,1]
     return cmd_vel
-circuit_dict = {"main_fusion_homing":main_fusion_homing,"joystick_interrupt":joystick_interrupt,"main_fusion":main_fusion,"navstack":navstack,"nav_and_joy":nav_and_joy,"sloppy_joystick":sloppy_joystick}
+circuit_dict = {"main_circuit_homing":main_circuit_homing,"joystick_interrupt":joystick_interrupt,"main_circuit":main_circuit,"navstack":navstack,"nav_and_joy":nav_and_joy,"sloppy_joystick":sloppy_joystick}
