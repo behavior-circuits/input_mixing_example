@@ -24,7 +24,7 @@ class sloppy_joystick:
 
             rospy.sleep(wait_time)
 
-            joystick_input = self.joystick_input + ctr_noise
+            joystick_input = self.joystick_input.copy()
 
             if self.lin_quant_steps != []:
                 bin_value         = np.digitize(joystick_input[0],bins=self.lin_quant_steps)
@@ -32,6 +32,9 @@ class sloppy_joystick:
             if self.ang_quant_steps != []:
                 bin_value         = np.digitize(joystick_input[1],bins=self.ang_quant_steps)
                 joystick_input[1] = self.ang_quant_steps[bin_value-1]
+
+            
+            joystick_input = self.joystick_input + ctr_noise
 
             output = Twist()
             output.linear.x  = max(-1,min(1,joystick_input[0]))
