@@ -1,0 +1,8 @@
+<launch>
+  <arg name="participent" />
+  <arg name="circuit" value="main_circuit"/>
+  <node name="record" pkg="rosbag" type="record" args="-a -O experimental_results/participent_$(arg participent)/$(arg circuit).bag"/>
+  <include file="$(find behaviour_circuits)/launch/circuit.launch">
+  <arg name="circuit" value="$(arg circuit)"/>
+  </include> 
+</launch>

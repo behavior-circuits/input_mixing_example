@@ -1,0 +1,6 @@
+<launch>
+  <arg name="participent" />
+  <arg name="circuit" value="normal_joystick"/>
+  <node name="record" pkg="rosbag" type="record" args="-a -O experimental_results/participent_$(arg participent)/$(arg circuit)_second_target.bag"/>
+  <include file="$(find teleop_twist_joy)/launch/teleop3.launch"/>
+</launch>

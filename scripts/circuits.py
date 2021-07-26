@@ -1,6 +1,18 @@
 from geometry_msgs.msg import Twist
 import behavior_gates as bg
 
+def collision_avoid(behaviors):
+    '''
+    Fusion circuit 1
+    ----------------
+
+    This Circuit avoids collisions and assist the joystick using a homing behaviour which is invoked by the joystick
+    '''
+    cmd_vel = Twist()
+    cmd_vel.linear.x  = behaviors[1,0]
+    cmd_vel.angular.z = behaviors[1,1]
+    return cmd_vel
+
 
 
 def main_circuit_homing(behaviors):
@@ -75,4 +87,4 @@ def sloppy_joystick(behaviors):
     cmd_vel.linear.x  = behaviors[2,0]
     cmd_vel.angular.z = behaviors[2,1]
     return cmd_vel
-circuit_dict = {"main_circuit_homing":main_circuit_homing,"joystick_interrupt":joystick_interrupt,"main_circuit":main_circuit,"navstack":navstack,"nav_and_joy":nav_and_joy,"sloppy_joystick":sloppy_joystick}
+circuit_dict = {"main_circuit_homing":main_circuit_homing,"joystick_interrupt":joystick_interrupt,"main_circuit":main_circuit,"navstack":navstack,"nav_and_joy":nav_and_joy,"sloppy_joystick":sloppy_joystick,"collision_avoidance":collision_avoid}
