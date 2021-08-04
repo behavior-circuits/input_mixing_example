@@ -21,7 +21,7 @@ rosbags
 ## Evaluate
  - ipynb: jupyter-notebooks to process and visualize the data
     - preprocessing.ipynb
-    - preprocessing.ipynb
+    - visualization.ipynb
  - html: html-version of jupyter-notebooks for easy access
  - df: pandas dataframes as *.csv files from rosbag raw-data
 
