@@ -14901,7 +14901,7 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[4]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">bag_nr</span> <span class="o">=</span> <span class="mi">2</span> <span class="c1"># choose participent</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">bag_nr</span> <span class="o">=</span> <span class="mi">5</span> <span class="c1"># choose participent</span>
 <span class="n">sloppy_joystick_bag</span> <span class="o">=</span> <span class="n">rosbag</span><span class="o">.</span><span class="n">Bag</span><span class="p">(</span><span class="s1">&#39;../../rosbags/participent_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">bag_nr</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/sloppy_joystick.bag&#39;</span><span class="p">)</span>
 
 <span class="c1"># Currently the rosbags must be chosen sepparately.</span>
@@ -14944,7 +14944,7 @@ a.anchor-link {
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[6]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">folder_path_df</span> <span class="o">=</span> <span class="s2">&quot;../df/participent_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">bag_nr</span><span class="p">)</span>
@@ -14971,7 +14971,7 @@ a.anchor-link {
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[7]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">laserscan_df</span> <span class="o">=</span> <span class="n">create_df_from_laserscan</span><span class="p">(</span><span class="n">sloppy_joystick_bag</span><span class="p">,</span> <span class="s2">&quot;/scan&quot;</span><span class="p">)</span>
@@ -14991,7 +14991,7 @@ a.anchor-link {
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[8]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">odom_df</span> <span class="o">=</span> <span class="n">create_df_from_odometry</span><span class="p">(</span><span class="n">sloppy_joystick_bag</span><span class="p">,</span> <span class="s2">&quot;/odom&quot;</span><span class="p">)</span>
@@ -15008,15 +15008,10 @@ a.anchor-link {
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h3 id="create-html-files">create html files<a class="anchor-link" href="#create-html-files">&#182;</a></h3>
 </div>
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="-"> <a class="anchor-link" href="#-">&#182;</a></h3>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[9]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># create a HTML file for easy access (without jupyter)</span>
@@ -15027,6 +15022,29 @@ a.anchor-link {
      </div>
 </div>
 </div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[9]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
+<pre>0</pre>
+</div>
+
+</div>
+
+</div>
+
 </div>
 
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
