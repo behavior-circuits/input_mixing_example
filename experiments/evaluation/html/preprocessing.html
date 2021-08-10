@@ -14870,8 +14870,9 @@ a.anchor-link {
         <span class="n">scan_df</span> <span class="o">=</span> <span class="n">scan_df</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">time</span><span class="p">,</span> <span class="s1">&#39;ranges&#39;</span><span class="p">:</span> <span class="n">ranges</span><span class="p">,</span> <span class="s1">&#39;angles&#39;</span><span class="p">:</span> <span class="n">angles</span><span class="p">},</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">scan_df</span>
 
-<span class="k">def</span> <span class="nf">create_df_from_odometry</span><span class="p">(</span><span class="n">bag</span><span class="p">,</span> <span class="n">odometry_topic</span><span class="p">,</span> <span class="n">t0</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span> <span class="c1"># t0 is a time offset that is subtracted</span>
+<span class="k">def</span> <span class="nf">create_df_from_odometry</span><span class="p">(</span><span class="n">bag</span><span class="p">,</span> <span class="n">odometry_topic</span><span class="p">,</span> <span class="n">t0</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">delete_xy_offset</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span> <span class="c1"># t0 is a time offset that is subtracted</span>
     <span class="n">odom_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;yaw&#39;</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="s1">&#39;omega&#39;</span><span class="p">])</span>
+    
     <span class="k">for</span> <span class="n">topic</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">bag</span><span class="o">.</span><span class="n">read_messages</span><span class="p">(</span><span class="n">topics</span><span class="o">=</span><span class="p">[</span><span class="n">odometry_topic</span><span class="p">]):</span>
         <span class="n">time</span> <span class="o">=</span> <span class="p">(</span><span class="n">rospy</span><span class="o">.</span><span class="n">Time</span><span class="o">.</span><span class="n">to_sec</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">-</span> <span class="n">t0</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1000000</span> <span class="c1"># time in nano-seconds (10^-9) - &gt; / 10^6 -&gt; milli-seconds</span>
         
@@ -14882,6 +14883,12 @@ a.anchor-link {
         <span class="n">omega</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">twist</span><span class="o">.</span><span class="n">twist</span><span class="o">.</span><span class="n">angular</span><span class="o">.</span><span class="n">z</span>
 
         <span class="n">odom_df</span> <span class="o">=</span> <span class="n">odom_df</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">time</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="n">y</span><span class="p">,</span> <span class="s1">&#39;yaw&#39;</span><span class="p">:</span> <span class="n">yaw</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">:</span> <span class="n">v</span><span class="p">,</span> <span class="s1">&#39;omega&#39;</span><span class="p">:</span> <span class="n">omega</span><span class="p">},</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">delete_xy_offset</span><span class="p">:</span>
+        <span class="n">odom_df</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">odom_df</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">odom_df</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">odom_df</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">odom_df</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">odom_df</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1">#odom_df[&#39;yaw&#39;] = odom_df[&#39;yaw&#39;] - odom_df[&#39;yaw&#39;].iloc[0]</span>
+        <span class="c1">#odom_df = odom_df - odom_df.iloc[0] # assuming v and omega are zero at the beginning</span>
     <span class="k">return</span> <span class="n">odom_df</span>
 </pre></div>
 
@@ -14902,14 +14909,15 @@ a.anchor-link {
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># choose participent</span>
-<span class="n">participent_nr</span> <span class="o">=</span> <span class="mi">5</span> 
+<span class="n">participent_numbers</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span> 
+<span class="c1">#participent_numbers = [1] # rosbags missing for participent</span>
 
 <span class="c1"># choose rosbags</span>
-<span class="c1"># bag_names = [&quot;sloppy_joystick&quot;] # participent 1 only has this bag</span>
 <span class="n">bag_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;main_circuit&quot;</span><span class="p">,</span> <span class="s2">&quot;main_circuit_second_target&quot;</span><span class="p">,</span> <span class="s2">&quot;normal_joystick&quot;</span><span class="p">,</span> <span class="s2">&quot;normal_joystick_second_target&quot;</span><span class="p">,</span> <span class="s2">&quot;sloppy_joystick&quot;</span><span class="p">,</span> <span class="s2">&quot;sloppy_joystick_second_target&quot;</span><span class="p">]</span>
+<span class="c1">#bag_names = [&quot;sloppy_joystick&quot;] # participent 1 only has &quot;sloppy_joystick&quot; bag</span>
 
 <span class="c1"># list twist topic names</span>
-<span class="n">twist_topic_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;/sloppy_joy_cmd&#39;</span><span class="p">,</span> <span class="s1">&#39;/nav_cmd&#39;</span><span class="p">,</span> <span class="s1">&#39;/joy_cmd&#39;</span><span class="p">,</span> <span class="s1">&#39;/homing_cmd&#39;</span><span class="p">,</span> <span class="s1">&#39;/cmd_vel_rc100&#39;</span><span class="p">,</span> <span class="s1">&#39;/cmd_vel&#39;</span><span class="p">,</span> <span class="s1">&#39;/col_cmd&#39;</span><span class="p">]</span>
+<span class="n">twist_topic_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sloppy_joy_cmd&#39;</span><span class="p">,</span> <span class="s1">&#39;nav_cmd&#39;</span><span class="p">,</span> <span class="s1">&#39;joy_cmd&#39;</span><span class="p">,</span> <span class="s1">&#39;homing_cmd&#39;</span><span class="p">,</span> <span class="s1">&#39;cmd_vel_rc100&#39;</span><span class="p">,</span> <span class="s1">&#39;cmd_vel&#39;</span><span class="p">,</span> <span class="s1">&#39;col_cmd&#39;</span><span class="p">]</span>
 </pre></div>
 
      </div>
@@ -14922,39 +14930,226 @@ a.anchor-link {
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h3 id="create-pandas-dataframes-(df)">create pandas dataframes (df)<a class="anchor-link" href="#create-pandas-dataframes-(df)">&#182;</a></h3>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[5]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span> <span class="c1"># Python ≥ 3.5</span>
 
-
-<span class="k">for</span> <span class="n">bag_name</span> <span class="ow">in</span> <span class="n">bag_names</span><span class="p">:</span>
+<span class="k">for</span> <span class="n">participent_nr</span> <span class="ow">in</span> <span class="n">participent_numbers</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">bag_name</span> <span class="ow">in</span> <span class="n">bag_names</span><span class="p">:</span>
     
-    <span class="n">folder_path_df</span> <span class="o">=</span> <span class="s2">&quot;../df/participent_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">participent_nr</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">bag_name</span>  
-    <span class="n">Path</span><span class="p">(</span><span class="n">folder_path_df</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">bag</span> <span class="o">=</span> <span class="n">rosbag</span><span class="o">.</span><span class="n">Bag</span><span class="p">(</span><span class="s1">&#39;../../rosbags/participent_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">participent_nr</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">bag_name</span> <span class="o">+</span> <span class="s1">&#39;.bag&#39;</span><span class="p">)</span>
+        <span class="n">folder_path_df</span> <span class="o">=</span> <span class="s2">&quot;../df/participent_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">participent_nr</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">bag_name</span>  
+        <span class="nb">print</span><span class="p">(</span><span class="n">folder_path_df</span><span class="p">)</span>
+        <span class="n">Path</span><span class="p">(</span><span class="n">folder_path_df</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">bag</span> <span class="o">=</span> <span class="n">rosbag</span><span class="o">.</span><span class="n">Bag</span><span class="p">(</span><span class="s1">&#39;../../rosbags/participent_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">participent_nr</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">bag_name</span> <span class="o">+</span> <span class="s1">&#39;.bag&#39;</span><span class="p">)</span>
     
-    <span class="c1"># create a pandas dataframe (df) for every twist topic</span>
-    <span class="k">for</span> <span class="n">twist_topic_name</span> <span class="ow">in</span> <span class="n">twist_topic_list</span><span class="p">:</span>
-        <span class="n">twist_df</span> <span class="o">=</span> <span class="n">create_df_from_twist</span><span class="p">(</span><span class="n">bag</span><span class="p">,</span> <span class="n">twist_topic_name</span><span class="p">)</span>
-        <span class="n">file_path</span> <span class="o">=</span> <span class="n">folder_path_df</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">twist_topic_name</span> <span class="o">+</span> <span class="s2">&quot;.csv&quot;</span>
-        <span class="n">twist_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># create a pandas dataframe (df) for every twist topic</span>
+        <span class="k">for</span> <span class="n">twist_topic_name</span> <span class="ow">in</span> <span class="n">twist_topic_list</span><span class="p">:</span>
+            <span class="n">twist_df</span> <span class="o">=</span> <span class="n">create_df_from_twist</span><span class="p">(</span><span class="n">bag</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">twist_topic_name</span><span class="p">)</span>
+            <span class="n">file_path</span> <span class="o">=</span> <span class="n">folder_path_df</span> <span class="o">+</span> <span class="s2">&quot;/twist_&quot;</span> <span class="o">+</span> <span class="n">twist_topic_name</span> <span class="o">+</span> <span class="s2">&quot;.csv&quot;</span>
+            <span class="n">twist_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         
-    <span class="c1"># create a pandas dataframe (df) for laserscan topic</span>
-    <span class="n">laserscan_df</span> <span class="o">=</span> <span class="n">create_df_from_laserscan</span><span class="p">(</span><span class="n">bag</span><span class="p">,</span> <span class="s2">&quot;/scan&quot;</span><span class="p">)</span>
-    <span class="n">laserscan_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">folder_path_df</span> <span class="o">+</span> <span class="s2">&quot;/scan.csv&quot;</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># create a pandas dataframe (df) for laserscan topic</span>
+        <span class="n">laserscan_df</span> <span class="o">=</span> <span class="n">create_df_from_laserscan</span><span class="p">(</span><span class="n">bag</span><span class="p">,</span> <span class="s2">&quot;/scan&quot;</span><span class="p">)</span>
+        <span class="n">laserscan_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">folder_path_df</span> <span class="o">+</span> <span class="s2">&quot;/scan.csv&quot;</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     
-    <span class="c1"># create a pandas dataframe (df) for odom topic</span>
-    <span class="n">odom_df</span> <span class="o">=</span> <span class="n">create_df_from_odometry</span><span class="p">(</span><span class="n">bag</span><span class="p">,</span> <span class="s2">&quot;/odom&quot;</span><span class="p">)</span>
-    <span class="n">odom_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">folder_path_df</span> <span class="o">+</span> <span class="s2">&quot;/odom.csv&quot;</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># create a pandas dataframe (df) for odom topic</span>
+        <span class="n">odom_df</span> <span class="o">=</span> <span class="n">create_df_from_odometry</span><span class="p">(</span><span class="n">bag</span><span class="p">,</span> <span class="s2">&quot;/odom&quot;</span><span class="p">,</span> <span class="n">delete_xy_offset</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">odom_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">folder_path_df</span> <span class="o">+</span> <span class="s2">&quot;/odom.csv&quot;</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
      </div>
 </div>
 </div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>../df/participent_2/main_circuit/twist_sloppy_joy_cmd.csv
+../df/participent_2/main_circuit/twist_nav_cmd.csv
+../df/participent_2/main_circuit/twist_joy_cmd.csv
+../df/participent_2/main_circuit/twist_homing_cmd.csv
+../df/participent_2/main_circuit/twist_cmd_vel_rc100.csv
+../df/participent_2/main_circuit/twist_cmd_vel.csv
+../df/participent_2/main_circuit/twist_col_cmd.csv
+../df/participent_2/main_circuit_second_target/twist_sloppy_joy_cmd.csv
+../df/participent_2/main_circuit_second_target/twist_nav_cmd.csv
+../df/participent_2/main_circuit_second_target/twist_joy_cmd.csv
+../df/participent_2/main_circuit_second_target/twist_homing_cmd.csv
+../df/participent_2/main_circuit_second_target/twist_cmd_vel_rc100.csv
+../df/participent_2/main_circuit_second_target/twist_cmd_vel.csv
+../df/participent_2/main_circuit_second_target/twist_col_cmd.csv
+../df/participent_2/normal_joystick/twist_sloppy_joy_cmd.csv
+../df/participent_2/normal_joystick/twist_nav_cmd.csv
+../df/participent_2/normal_joystick/twist_joy_cmd.csv
+../df/participent_2/normal_joystick/twist_homing_cmd.csv
+../df/participent_2/normal_joystick/twist_cmd_vel_rc100.csv
+../df/participent_2/normal_joystick/twist_cmd_vel.csv
+../df/participent_2/normal_joystick/twist_col_cmd.csv
+../df/participent_2/normal_joystick_second_target/twist_sloppy_joy_cmd.csv
+../df/participent_2/normal_joystick_second_target/twist_nav_cmd.csv
+../df/participent_2/normal_joystick_second_target/twist_joy_cmd.csv
+../df/participent_2/normal_joystick_second_target/twist_homing_cmd.csv
+../df/participent_2/normal_joystick_second_target/twist_cmd_vel_rc100.csv
+../df/participent_2/normal_joystick_second_target/twist_cmd_vel.csv
+../df/participent_2/normal_joystick_second_target/twist_col_cmd.csv
+../df/participent_2/sloppy_joystick/twist_sloppy_joy_cmd.csv
+../df/participent_2/sloppy_joystick/twist_nav_cmd.csv
+../df/participent_2/sloppy_joystick/twist_joy_cmd.csv
+../df/participent_2/sloppy_joystick/twist_homing_cmd.csv
+../df/participent_2/sloppy_joystick/twist_cmd_vel_rc100.csv
+../df/participent_2/sloppy_joystick/twist_cmd_vel.csv
+../df/participent_2/sloppy_joystick/twist_col_cmd.csv
+../df/participent_2/sloppy_joystick_second_target/twist_sloppy_joy_cmd.csv
+../df/participent_2/sloppy_joystick_second_target/twist_nav_cmd.csv
+../df/participent_2/sloppy_joystick_second_target/twist_joy_cmd.csv
+../df/participent_2/sloppy_joystick_second_target/twist_homing_cmd.csv
+../df/participent_2/sloppy_joystick_second_target/twist_cmd_vel_rc100.csv
+../df/participent_2/sloppy_joystick_second_target/twist_cmd_vel.csv
+../df/participent_2/sloppy_joystick_second_target/twist_col_cmd.csv
+../df/participent_3/main_circuit/twist_sloppy_joy_cmd.csv
+../df/participent_3/main_circuit/twist_nav_cmd.csv
+../df/participent_3/main_circuit/twist_joy_cmd.csv
+../df/participent_3/main_circuit/twist_homing_cmd.csv
+../df/participent_3/main_circuit/twist_cmd_vel_rc100.csv
+../df/participent_3/main_circuit/twist_cmd_vel.csv
+../df/participent_3/main_circuit/twist_col_cmd.csv
+../df/participent_3/main_circuit_second_target/twist_sloppy_joy_cmd.csv
+../df/participent_3/main_circuit_second_target/twist_nav_cmd.csv
+../df/participent_3/main_circuit_second_target/twist_joy_cmd.csv
+../df/participent_3/main_circuit_second_target/twist_homing_cmd.csv
+../df/participent_3/main_circuit_second_target/twist_cmd_vel_rc100.csv
+../df/participent_3/main_circuit_second_target/twist_cmd_vel.csv
+../df/participent_3/main_circuit_second_target/twist_col_cmd.csv
+../df/participent_3/normal_joystick/twist_sloppy_joy_cmd.csv
+../df/participent_3/normal_joystick/twist_nav_cmd.csv
+../df/participent_3/normal_joystick/twist_joy_cmd.csv
+../df/participent_3/normal_joystick/twist_homing_cmd.csv
+../df/participent_3/normal_joystick/twist_cmd_vel_rc100.csv
+../df/participent_3/normal_joystick/twist_cmd_vel.csv
+../df/participent_3/normal_joystick/twist_col_cmd.csv
+../df/participent_3/normal_joystick_second_target/twist_sloppy_joy_cmd.csv
+../df/participent_3/normal_joystick_second_target/twist_nav_cmd.csv
+../df/participent_3/normal_joystick_second_target/twist_joy_cmd.csv
+../df/participent_3/normal_joystick_second_target/twist_homing_cmd.csv
+../df/participent_3/normal_joystick_second_target/twist_cmd_vel_rc100.csv
+../df/participent_3/normal_joystick_second_target/twist_cmd_vel.csv
+../df/participent_3/normal_joystick_second_target/twist_col_cmd.csv
+../df/participent_3/sloppy_joystick/twist_sloppy_joy_cmd.csv
+../df/participent_3/sloppy_joystick/twist_nav_cmd.csv
+../df/participent_3/sloppy_joystick/twist_joy_cmd.csv
+../df/participent_3/sloppy_joystick/twist_homing_cmd.csv
+../df/participent_3/sloppy_joystick/twist_cmd_vel_rc100.csv
+../df/participent_3/sloppy_joystick/twist_cmd_vel.csv
+../df/participent_3/sloppy_joystick/twist_col_cmd.csv
+../df/participent_3/sloppy_joystick_second_target/twist_sloppy_joy_cmd.csv
+../df/participent_3/sloppy_joystick_second_target/twist_nav_cmd.csv
+../df/participent_3/sloppy_joystick_second_target/twist_joy_cmd.csv
+../df/participent_3/sloppy_joystick_second_target/twist_homing_cmd.csv
+../df/participent_3/sloppy_joystick_second_target/twist_cmd_vel_rc100.csv
+../df/participent_3/sloppy_joystick_second_target/twist_cmd_vel.csv
+../df/participent_3/sloppy_joystick_second_target/twist_col_cmd.csv
+../df/participent_4/main_circuit/twist_sloppy_joy_cmd.csv
+../df/participent_4/main_circuit/twist_nav_cmd.csv
+../df/participent_4/main_circuit/twist_joy_cmd.csv
+../df/participent_4/main_circuit/twist_homing_cmd.csv
+../df/participent_4/main_circuit/twist_cmd_vel_rc100.csv
+../df/participent_4/main_circuit/twist_cmd_vel.csv
+../df/participent_4/main_circuit/twist_col_cmd.csv
+../df/participent_4/main_circuit_second_target/twist_sloppy_joy_cmd.csv
+../df/participent_4/main_circuit_second_target/twist_nav_cmd.csv
+../df/participent_4/main_circuit_second_target/twist_joy_cmd.csv
+../df/participent_4/main_circuit_second_target/twist_homing_cmd.csv
+../df/participent_4/main_circuit_second_target/twist_cmd_vel_rc100.csv
+../df/participent_4/main_circuit_second_target/twist_cmd_vel.csv
+../df/participent_4/main_circuit_second_target/twist_col_cmd.csv
+../df/participent_4/normal_joystick/twist_sloppy_joy_cmd.csv
+../df/participent_4/normal_joystick/twist_nav_cmd.csv
+../df/participent_4/normal_joystick/twist_joy_cmd.csv
+../df/participent_4/normal_joystick/twist_homing_cmd.csv
+../df/participent_4/normal_joystick/twist_cmd_vel_rc100.csv
+../df/participent_4/normal_joystick/twist_cmd_vel.csv
+../df/participent_4/normal_joystick/twist_col_cmd.csv
+../df/participent_4/normal_joystick_second_target/twist_sloppy_joy_cmd.csv
+../df/participent_4/normal_joystick_second_target/twist_nav_cmd.csv
+../df/participent_4/normal_joystick_second_target/twist_joy_cmd.csv
+../df/participent_4/normal_joystick_second_target/twist_homing_cmd.csv
+../df/participent_4/normal_joystick_second_target/twist_cmd_vel_rc100.csv
+../df/participent_4/normal_joystick_second_target/twist_cmd_vel.csv
+../df/participent_4/normal_joystick_second_target/twist_col_cmd.csv
+../df/participent_4/sloppy_joystick/twist_sloppy_joy_cmd.csv
+../df/participent_4/sloppy_joystick/twist_nav_cmd.csv
+../df/participent_4/sloppy_joystick/twist_joy_cmd.csv
+../df/participent_4/sloppy_joystick/twist_homing_cmd.csv
+../df/participent_4/sloppy_joystick/twist_cmd_vel_rc100.csv
+../df/participent_4/sloppy_joystick/twist_cmd_vel.csv
+../df/participent_4/sloppy_joystick/twist_col_cmd.csv
+../df/participent_4/sloppy_joystick_second_target/twist_sloppy_joy_cmd.csv
+../df/participent_4/sloppy_joystick_second_target/twist_nav_cmd.csv
+../df/participent_4/sloppy_joystick_second_target/twist_joy_cmd.csv
+../df/participent_4/sloppy_joystick_second_target/twist_homing_cmd.csv
+../df/participent_4/sloppy_joystick_second_target/twist_cmd_vel_rc100.csv
+../df/participent_4/sloppy_joystick_second_target/twist_cmd_vel.csv
+../df/participent_4/sloppy_joystick_second_target/twist_col_cmd.csv
+../df/participent_5/main_circuit/twist_sloppy_joy_cmd.csv
+../df/participent_5/main_circuit/twist_nav_cmd.csv
+../df/participent_5/main_circuit/twist_joy_cmd.csv
+../df/participent_5/main_circuit/twist_homing_cmd.csv
+../df/participent_5/main_circuit/twist_cmd_vel_rc100.csv
+../df/participent_5/main_circuit/twist_cmd_vel.csv
+../df/participent_5/main_circuit/twist_col_cmd.csv
+../df/participent_5/main_circuit_second_target/twist_sloppy_joy_cmd.csv
+../df/participent_5/main_circuit_second_target/twist_nav_cmd.csv
+../df/participent_5/main_circuit_second_target/twist_joy_cmd.csv
+../df/participent_5/main_circuit_second_target/twist_homing_cmd.csv
+../df/participent_5/main_circuit_second_target/twist_cmd_vel_rc100.csv
+../df/participent_5/main_circuit_second_target/twist_cmd_vel.csv
+../df/participent_5/main_circuit_second_target/twist_col_cmd.csv
+../df/participent_5/normal_joystick/twist_sloppy_joy_cmd.csv
+../df/participent_5/normal_joystick/twist_nav_cmd.csv
+../df/participent_5/normal_joystick/twist_joy_cmd.csv
+../df/participent_5/normal_joystick/twist_homing_cmd.csv
+../df/participent_5/normal_joystick/twist_cmd_vel_rc100.csv
+../df/participent_5/normal_joystick/twist_cmd_vel.csv
+../df/participent_5/normal_joystick/twist_col_cmd.csv
+../df/participent_5/normal_joystick_second_target/twist_sloppy_joy_cmd.csv
+../df/participent_5/normal_joystick_second_target/twist_nav_cmd.csv
+../df/participent_5/normal_joystick_second_target/twist_joy_cmd.csv
+../df/participent_5/normal_joystick_second_target/twist_homing_cmd.csv
+../df/participent_5/normal_joystick_second_target/twist_cmd_vel_rc100.csv
+../df/participent_5/normal_joystick_second_target/twist_cmd_vel.csv
+../df/participent_5/normal_joystick_second_target/twist_col_cmd.csv
+../df/participent_5/sloppy_joystick/twist_sloppy_joy_cmd.csv
+../df/participent_5/sloppy_joystick/twist_nav_cmd.csv
+../df/participent_5/sloppy_joystick/twist_joy_cmd.csv
+../df/participent_5/sloppy_joystick/twist_homing_cmd.csv
+../df/participent_5/sloppy_joystick/twist_cmd_vel_rc100.csv
+../df/participent_5/sloppy_joystick/twist_cmd_vel.csv
+../df/participent_5/sloppy_joystick/twist_col_cmd.csv
+../df/participent_5/sloppy_joystick_second_target/twist_sloppy_joy_cmd.csv
+../df/participent_5/sloppy_joystick_second_target/twist_nav_cmd.csv
+../df/participent_5/sloppy_joystick_second_target/twist_joy_cmd.csv
+../df/participent_5/sloppy_joystick_second_target/twist_homing_cmd.csv
+../df/participent_5/sloppy_joystick_second_target/twist_cmd_vel_rc100.csv
+</pre>
+</div>
+</div>
+
+</div>
+
 </div>
 
 </div>
