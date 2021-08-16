@@ -17,7 +17,7 @@ from pathlib import Path
 # path of the rosbags
 rosbag_path = 'rosbags'
 # choose participent
-participent_numbers = [2, 3, 4, 5]
+participent_numbers = [6] #[2, 3, 4, 5,6]
 # choose rosbags for each participent
 bag_names = ["main_circuit", "main_circuit_second_target", "normal_joystick", "normal_joystick_second_target", "sloppy_joystick", "sloppy_joystick_second_target"]
 
