@@ -25,8 +25,6 @@ class Fusion:
 		self.pub.publish(cmd_vel)
 
 
-def EQUIV(x,y):
-	return bg.SNOT(XOR)
 
 
 if __name__ == '__main__':
