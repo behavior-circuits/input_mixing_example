@@ -35,8 +35,8 @@ def joystick_interrupt(behaviors):
     This Circuit lets the system navigate autonomously except if the joystick provides a different command
     '''
     cmd_vel = Twist()
-    cmd_vel.linear.x  = bg.PREVAIL(behaviors[2,0], behaviors[0,0])
-    cmd_vel.angular.z = bg.PREVAIL(behaviors[2,1], bg.PREVAIL(behaviors[1,1],behaviors[0,1]))
+    cmd_vel.linear.x  = bg.AND(behaviors[2,0], behaviors[3,0])
+    cmd_vel.angular.z = bg.PREVAIL(behaviors[2,1], behaviors[3,1])
     return cmd_vel
 
 def main_circuit(behaviors):

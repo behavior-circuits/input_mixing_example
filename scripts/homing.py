@@ -26,7 +26,7 @@ class TargetCalculation:
             normalized_angle = sigmoid(alpha,0.8,0,True)
             normalized_rho   = normaliser(rho,0.1,0.02)
 
-            cmd_vel.linear.x  = 0.1 * bg.AMP(normalized_rho,bg.NOT(np.abs(normalized_angle))) 
+            cmd_vel.linear.x  = 1 * bg.AMP(normalized_rho,bg.NOT(np.abs(normalized_angle))) 
             cmd_vel.angular.z =  -1 * normalized_angle
             self.cmd_vel      = cmd_vel
             pub.publish(self.cmd_vel)
