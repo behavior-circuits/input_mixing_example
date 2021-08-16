@@ -14,6 +14,15 @@ import rosbag
 import math
 from pathlib import Path 
 
+# path of the rosbags
+rosbag_path = 'rosbags'
+# choose participent
+participent_numbers = [2, 3, 4, 5]
+# choose rosbags for each participent
+bag_names = ["main_circuit", "main_circuit_second_target", "normal_joystick", "normal_joystick_second_target", "sloppy_joystick", "sloppy_joystick_second_target"]
+
+
+
 '''
 Auxilarry Functions
 ---------------------------------------------
@@ -88,28 +97,15 @@ def create_df_from_odometry(bag, odometry_topic, t0=0, delete_xy_offset=False): 
 
 
 
-# choose participent
-participent_numbers = [2, 3, 4, 5]
-#participent_numbers = [1] # rosbags missing for participent
-
-# choose rosbags
-bag_names = ["main_circuit", "main_circuit_second_target", "normal_joystick", "normal_joystick_second_target", "sloppy_joystick", "sloppy_joystick_second_target"]
-#bag_names = ["sloppy_joystick"] # participent 1 only has "sloppy_joystick" bag
-
 # list twist topic names
 twist_topic_list = ['sloppy_joy_cmd', 'nav_cmd', 'joy_cmd', 'homing_cmd', 'cmd_vel_rc100', 'cmd_vel', 'col_cmd']
-
-
-
-
-
 for participent_nr in participent_numbers:
     for bag_name in bag_names:
     
-        folder_path_df = "../df/participent_" + str(participent_nr) + '/' + bag_name  
+        folder_path_df = "experimental_data/participent_" + str(participent_nr) + '/' + bag_name  
         print(folder_path_df)
         Path(folder_path_df).mkdir(parents=True, exist_ok=True)
-        bag = rosbag.Bag('../../rosbags/participent_' + str(participent_nr) + '/' + bag_name + '.bag')
+        bag = rosbag.Bag(rosbag_path + '/participent_' + str(participent_nr) + '/' + bag_name + '.bag')
     
         # create a pandas dataframe (df) for every twist topic
         for twist_topic_name in twist_topic_list:
