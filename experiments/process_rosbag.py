@@ -17,7 +17,7 @@ from pathlib import Path
 # path of the rosbags
 rosbag_path = 'rosbags'
 # choose participent
-participent_numbers = [6] #[2, 3, 4, 5,6]
+participent_numbers = [2, 3, 4, 5,6]
 # choose rosbags for each participent
 bag_names = ["main_circuit", "main_circuit_second_target", "normal_joystick", "normal_joystick_second_target", "sloppy_joystick", "sloppy_joystick_second_target"]
 
@@ -60,7 +60,7 @@ def create_df_from_twist(bag, twist_topic):
 def create_df_from_laserscan(bag, laserscan_topic, t0=0): # t0 is a time offset that is subtracted
     scan_df = pd.DataFrame(columns=['time', 'ranges', 'angles'])
     for topic, msg, t in bag.read_messages(topics=[laserscan_topic]):
-        time = (rospy.Time.to_sec(t) - t0) / 1000000 # time in nano-seconds (10^-9) - > / 10^6 -> milli-seconds
+        time = (rospy.Time.to_sec(t) - t0)
         ranges = msg.ranges
         ranges = np.array(ranges)
         angles = np.arange(msg.angle_min, msg.angle_max+msg.angle_increment, msg.angle_increment)
@@ -73,7 +73,7 @@ def create_df_from_odometry(bag, odometry_topic, t0=0, delete_xy_offset=False): 
     odom_df = pd.DataFrame(columns=['time', 'x', 'y', 'yaw', 'v', 'omega'])
 
     for topic, msg, t in bag.read_messages(topics=[odometry_topic]):
-        time = (rospy.Time.to_sec(t) - t0) / 1000000 # time in nano-seconds (10^-9) - > / 10^6 -> milli-seconds
+        time = (rospy.Time.to_sec(t) - t0)
 
         x = msg.pose.pose.position.x
         y = msg.pose.pose.position.y

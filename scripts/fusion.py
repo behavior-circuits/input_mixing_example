@@ -30,7 +30,7 @@ class Fusion:
 if __name__ == '__main__':
 	try:
 		rospy.init_node("fusion")
-		fus = Fusion()	
+		fus = Fusion()
 	except rospy.ROSInterruptException:
 		rospy.loginfo("---------- FUSION-ERROR! ---------")
 
