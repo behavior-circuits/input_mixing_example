@@ -8,8 +8,8 @@ import circuits as circ
 class Fusion:
 	def __init__(self):
                 # array contains homing_cmd col_cmd joy_cmd nav_cmd in that order
-                self.behaviors = np.zeros((4,2))
-                for i in range(5):
+                self.behaviors = np.zeros((5,2))
+                for i in range(6):
                     rospy.Subscriber(sys.argv[i+1], Twist, self.generate_behavior,i)
 		self.pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
 		while not rospy.is_shutdown():
@@ -20,7 +20,7 @@ class Fusion:
                 self.behaviors[index,1] = data.angular.z
 
 	def fusion(self):
-                circuit = circ.circuit_dict[sys.argv[5]]
+                circuit = circ.circuit_dict[sys.argv[6]]
                 cmd_vel = circuit(self.behaviors)
 		self.pub.publish(cmd_vel)
 
