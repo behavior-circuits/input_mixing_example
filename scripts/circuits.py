@@ -88,3 +88,16 @@ def sloppy_joystick(behaviors):
     cmd_vel.angular.z = behaviors[2,1]
     return cmd_vel
 circuit_dict = {"main_circuit_homing":main_circuit_homing,"joystick_interrupt":joystick_interrupt,"main_circuit":main_circuit,"navstack":navstack,"nav_and_joy":nav_and_joy,"sloppy_joystick":sloppy_joystick,"collision_avoidance":collision_avoid}
+
+
+def joystick_main_circuit(behaviors):
+    '''
+    Fusion circuit 7
+    ----------------
+
+    This Circuit avoids collisions and assist the joystick using a navstack behaviour which is ORed by the joystick
+    '''
+    cmd_vel = Twist()
+    cmd_vel.linear.x  = bg.AND(10*behaviors[1,0],bg.INVOKE(behaviors[4,0],behaviors[3,0]))
+    cmd_vel.angular.z = bg.PREVAIL(behaviors[1,1], bg.OR(behaviors[4,1],behaviors[3,1]))
+    return cmd_vel
