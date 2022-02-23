@@ -1,7 +1,0 @@
-# ignore rosbags
-*.bag
-*.zip
-# ipython
-.ipynb_checkpoints
-
-
